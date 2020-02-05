@@ -126,13 +126,14 @@ def get_key(val):
              return key
 
 def next_player_move(move,boardfen,side):
-    print(f"from the player move in engine{boardfen}")
     #Need to convert the boardfen into an actual board fen
-    boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen))) + " " + side
     #Set the board to be the board before the player made the move
-    board = chess.Board(boardfen_converted)
+    boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen)))
+    try:
+        board = chess.Board(boardfen_converted + " " + side)
+    except:
+        board = chess.Board(boardfen_converted + "1" + " " + side)
     legals = [str(legal) for legal in list(board.legal_moves)]
-    print(board)
     print(legals)
     sqs = move
     sq1 = sqs[0]
@@ -141,7 +142,8 @@ def next_player_move(move,boardfen,side):
     coord2 = str(get_key(int(sq2)))
     theirMove = coord1 + coord2
     #Check the legality of the move against the board receved from the front-end
-    if(theirMove in legals):
+
+    try:
         moveparsed = chess.Move.from_uci(theirMove)
         board.push(moveparsed)
         newboard = board.build_FE_board()
@@ -150,7 +152,7 @@ def next_player_move(move,boardfen,side):
         elif side == 'b':
             side = 'w'
         return (newboard,1,side)
-    else:
+    except:
         return (boardfen,0,side)
 
 
@@ -192,24 +194,24 @@ def build_input_board(self):
 chess.BaseBoard.build_input_board = build_input_board
 
 def bot_move(boardfen,side):
-    boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen))) + " " + side
-    board = chess.Board(boardfen_converted)
+    boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen)))
+    try:
+        board = chess.Board(boardfen_converted + " " + side)
+    except:
+        board = chess.Board(boardfen_converted + "1" + " " + side)
+    if board.is_checkmate():
+        return tuple(("Checkmate You Win!",board.build_FE_board()))
     legals = list(board.legal_moves)
     input_board = board.build_input_board()
     bot_choice = bot_enginetest.Bot_Engine(board,legals,input_board).bot_move()
     botmove = bot_choice
-    print(f"Bot Chose {botmove}")
     board.push(botmove)
     turn = 'player'
     if board.is_checkmate():
         if(board.turn ==chess.WHITE):
-            Winner = "Congrats Black"
-            print(Winner)
-            return tuple(("Game Over",board.build_FE_board()))
+            return tuple(("Checkmate You Lose!",board.build_FE_board()))
         else:
-            Winner = "Congrats White"
-            print(Winner)
-            return tuple(("Game Over",board.build_FE_board()))
+            return tuple(("Checkmate You Lose!",board.build_FE_board()))
         print(board)
         return "Game Over"
     else:
