@@ -117,7 +117,10 @@ def agg_blank(bf):
                 newbf = newbf + item
             else:
                 newbf = newbf + item
-    return(newbf)
+    if counter != 0:
+        return(newbf+str(counter))
+    else:
+        return (newbf)
 
 def get_key(val):
     movesDict = MoveMakerDict.items()
@@ -129,10 +132,7 @@ def next_player_move(move,boardfen,side):
     #Need to convert the boardfen into an actual board fen
     #Set the board to be the board before the player made the move
     boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen)))
-    try:
-        board = chess.Board(boardfen_converted + " " + side)
-    except:
-        board = chess.Board(boardfen_converted + "1" + " " + side)
+    board = chess.Board(boardfen_converted + " " + side)
     legals = [str(legal) for legal in list(board.legal_moves)]
     print(legals)
     sqs = move
@@ -194,11 +194,10 @@ def build_input_board(self):
 chess.BaseBoard.build_input_board = build_input_board
 
 def bot_move(boardfen,side):
+    print(boardfen)
     boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen)))
-    try:
-        board = chess.Board(boardfen_converted + " " + side)
-    except:
-        board = chess.Board(boardfen_converted + "1" + " " + side)
+    print(boardfen_converted)
+    board = chess.Board(boardfen_converted + " " + side)
     if board.is_checkmate():
         return tuple(("Checkmate You Win!",board.build_FE_board()))
     legals = list(board.legal_moves)
