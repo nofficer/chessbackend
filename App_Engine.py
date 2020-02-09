@@ -132,19 +132,24 @@ def next_player_move(move,boardfen,side):
     #Need to convert the boardfen into an actual board fen
     #Set the board to be the board before the player made the move
     boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen)))
-    board = chess.Board(boardfen_converted + " " + side)
+    board = chess.Board(boardfen_converted + " " + side +' KQkq')
     legals = [str(legal) for legal in list(board.legal_moves)]
-    print(legals)
+    #print(legals)
     sqs = move
     sq1 = sqs[0]
     sq2 = sqs[1]
     coord1 = str(get_key(int(sq1)))
     coord2 = str(get_key(int(sq2)))
     theirMove = coord1 + coord2
-    #Check the legality of the move against the board receved from the front-end
-
+    print(theirMove)
+    #print(whoturn)
     try:
         moveparsed = chess.Move.from_uci(theirMove)
+    except:
+        return (boardfen,0,side)
+    #print(board.has_castling_rights(chess.WHITE))
+    #Check the legality of the move against the board receved from the front-end
+    if(theirMove in legals):
         board.push(moveparsed)
         newboard = board.build_FE_board()
         if side == 'w':
@@ -152,7 +157,7 @@ def next_player_move(move,boardfen,side):
         elif side == 'b':
             side = 'w'
         return (newboard,1,side)
-    except:
+    else:
         return (boardfen,0,side)
 
 
@@ -194,10 +199,10 @@ def build_input_board(self):
 chess.BaseBoard.build_input_board = build_input_board
 
 def bot_move(boardfen,side):
-    print(boardfen)
+    #print(boardfen)
     boardfen_converted = agg_blank(insert_slash(conv_nums_to_fen(boardfen)))
-    print(boardfen_converted)
-    board = chess.Board(boardfen_converted + " " + side)
+    #print(boardfen_converted)
+    board = chess.Board(boardfen_converted + " " + side +' KQkq')
     if board.is_checkmate():
         return tuple(("Checkmate You Win!",board.build_FE_board()))
     legals = list(board.legal_moves)
@@ -211,10 +216,10 @@ def bot_move(boardfen,side):
             return tuple(("Checkmate You Lose!",board.build_FE_board()))
         else:
             return tuple(("Checkmate You Lose!",board.build_FE_board()))
-        print(board)
+    #    print(board)
         return "Game Over"
     else:
-        print(board)
+        #print(board)
         if side == 'w':
             side = 'b'
         elif side == 'b':

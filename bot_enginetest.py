@@ -219,11 +219,11 @@ class Bot_Engine():
 
         for move in node.children: #for each move in the list of moves that initially came from predict moves which occurs when the node is initialized
         #    print(f"This is the move currently being evaluated coming from node.children{move} the depth is currently {depth}")
-            print(move)
+            #print(f"coming from the minimax function for loop{move}")
             moveUci = move[0]
             node.board.push(moveUci) #push the move onto the board, we essentially are going to check the outcome 1 move into the future of doing each of the predicted moves
             result = self.minimax(self.Node(node.board,legals=list(node.board.legal_moves)), depth-1,-1*player,alpha,beta) # Now we run minimax again. except this time the depth is decreased to zero( if its the first 15 turns)
-
+            #print(result)
             # This minimax runs with the new board that has had this move pushed onto it, it also has a new list of legal moves running the minimax brings us back to the top of this function
             # We have now returned the mat+prediction score of the best possible move the opponent can make if the bot makes the current move from within the loop
             opposition_value = result[0] # opposition value is the mat+pred score of the best possible opponent move
@@ -272,13 +272,14 @@ class Bot_Engine():
         fromTuples = Bot_Engine.conv_to_tuples(probs[0][0],FromList)
         #print(f"This is the fromTuples {fromTuples[0]}")
         toTuples = Bot_Engine.conv_to_tuples(probs[1][0],ToList)
-    #    print(f"This is the toTuples {toTuples[0]}")
+        #print(f"This is the toTuples {toTuples[0]}")
         combinedParam = Bot_Engine.combine(fromTuples,toTuples)
         #print(f"This is the combinedParam {combinedParam[0]}")
         legalMovesList = Bot_Engine.checkLegal(combinedParam,legals)# This now converts it to string as well
-    #    print(f"This is the legalMovesList {legalMovesList[0]}")
+        #This legalMovesList step is what takes the most amount of time
+        #print(f"This is the legalMovesList {legalMovesList[0]}")
         matScoreMoves = Bot_Engine.get_mat_scores(board,legalMovesList)
-    #    print(f"This is the matScoreMoves {matScoreMoves[0]}")
+        #print(f"This is the matScoreMoves {matScoreMoves[0]}")
         sortedMatScoreMoves = Bot_Engine.sortList(matScoreMoves)
         #print(f"This is the sortedMatScoreMoves {sortedMatScoreMoves[0]}")
         return sortedMatScoreMoves
