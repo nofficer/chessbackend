@@ -1,10 +1,6 @@
 import numpy as np
 import os
 from keras.models import model_from_json
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation
-from keras.preprocessing.text import Tokenizer
 import h5py
 import chess
 from sys import maxsize as infinity
