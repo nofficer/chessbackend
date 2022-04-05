@@ -135,6 +135,7 @@ def next_player_move(move,boardfen,side):
     board = chess.Board(boardfen_converted + " " + side +' KQkq')
     legals = [str(legal) for legal in list(board.legal_moves)]
     #print(legals)
+
     sqs = move
     sq1 = sqs[0]
     sq2 = sqs[1]
@@ -143,6 +144,7 @@ def next_player_move(move,boardfen,side):
     theirMove = coord1 + coord2
     print(theirMove)
     #print(whoturn)
+
     try:
         moveparsed = chess.Move.from_uci(theirMove)
     except:
@@ -150,6 +152,26 @@ def next_player_move(move,boardfen,side):
     #print(board.has_castling_rights(chess.WHITE))
     #Check the legality of the move against the board receved from the front-end
     if(theirMove in legals):
+        board.push(moveparsed)
+        newboard = board.build_FE_board()
+        if side == 'w':
+            side = 'b'
+        elif side == 'b':
+            side = 'w'
+        return (newboard,1,side)
+    elif(theirMove+'q' in legals):
+        # Have to remkae the moveparsed to promote pawn to queen
+        moveparsed = chess.Move.from_uci(theirMove+'q')
+        board.push(moveparsed)
+        newboard = board.build_FE_board()
+        if side == 'w':
+            side = 'b'
+        elif side == 'b':
+            side = 'w'
+        return (newboard,1,side)
+    elif(theirMove+'Q' in legals):
+        # Have to remkae the moveparsed to promote pawn to queen
+        moveparsed = chess.Move.from_uci(theirMove+'Q')
         board.push(moveparsed)
         newboard = board.build_FE_board()
         if side == 'w':
